@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "AI Chat Extractor",
+  "version": "0.1",
+  "description": "Extract chat context from AI chat sessions",
+  "permissions": ["activeTab", "scripting"],
+  "host_permissions": [
+    "https://chatgpt.com/*",
+    "https://gemini.google.com/*",
+    "https://claude.ai/*"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://gemini.google.com/*",
+        "https://claude.ai/*"
+      ],
+      "js": ["content.js"]
+    }
+  ]
+}
