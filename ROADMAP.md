@@ -6,16 +6,17 @@ This document outlines the progression from basic extraction to your ultimate go
 
 **What I built:**
 - Chrome extension with popup UI
-- Multi-platform detection (ChatGPT, Claude, Gemini)
+- Right now for ChatGPT only
 - DOM-based conversation extraction
 - JSON export with compact mode
 - File download functionality
 
 **Current Capabilities:**
-- Extract full conversations (chat GPT works only)
+- Extract full conversations
 - Minimize file size (47% reduction in compact mode)
-- Preserve conversation structure
+- Preserve conversation structure (with markdown file)
 - Include metadata
+- Include code, table structure.
 
 ---
 
@@ -223,30 +224,6 @@ ${context.decisions.map(d => `- ${d}`).join('\n')}
 
 ---
 
-## 📊 Success Metrics
-
-### Phase 1 (Current)
-- [x] Works on 3+ platforms
-- [x] <10 KB for 20 messages (compact mode)
-- [x] One-click extraction
-
-### Phase 2 Goals
-- [ ] Context size <50% of Phase 1
-- [ ] 90%+ accuracy in goal detection
-- [ ] Preserve all critical decision points
-
-### Phase 3 Goals
-- [ ] AI can understand context with <5 messages
-- [ ] Context transfer success rate >95%
-- [ ] <2 second processing time
-
-### Phase 4 Goals
-- [ ] Works with 10+ AI platforms
-- [ ] Auto-generate continuation prompts
-- [ ] Merge 5+ conversations intelligently
-
----
-
 ## 🔧 Implementation Priority
 
 ### Immediate (Next Week)
@@ -275,24 +252,6 @@ ${context.decisions.map(d => `- ${d}`).join('\n')}
 
 ---
 
-## 🤝 Contributing
-
-Want to help? Pick a feature from the roadmap and:
-
-1. Fork the repository
-2. Create a feature branch
-3. Implement the feature
-4. Test thoroughly
-5. Submit a pull request
-
-**High-Impact Contributions:**
-- New platform support
-- Better extraction algorithms  
-- Context analysis improvements
-- UI/UX enhancements
-
----
-
 ## 📚 Resources
 
 ### Learning Materials
@@ -312,5 +271,3 @@ Want to help? Pick a feature from the roadmap and:
 - "Knowledge Graph Construction from Conversations"
 
 ---
-
-**Remember:** Start small, iterate fast, and always keep the end user in mind!
