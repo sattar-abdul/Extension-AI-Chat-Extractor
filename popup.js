@@ -10,25 +10,25 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Get the active tab
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  
+
   // Send message to content script to detect platform
   chrome.tabs.sendMessage(tab.id, { action: 'detectPlatform' }, (response) => {
     if (chrome.runtime.lastError) {
       statusDiv.className = 'status not-detected';
-      statusDiv.innerHTML = '<div class="platform-name">⚠️ Not on a supported AI chat platform</div>' +
-                           '<div>Please navigate to ChatGPT, Claude, or Gemini</div>';
+      statusDiv.innerHTML = '<div class="platform-name">⚠️ Not on ChatGPT</div>' +
+        '<div>Please navigate to ChatGPT</div>';
       return;
     }
-    
+
     if (response && response.platform) {
       statusDiv.className = 'status detected';
       statusDiv.innerHTML = `<div class="platform-name">✓ ${response.platformName} detected</div>` +
-                           `<div>Ready to extract conversation</div>`;
+        `<div>Ready to extract conversation</div>`;
       extractBtn.disabled = false;
     } else {
       statusDiv.className = 'status not-detected';
       statusDiv.innerHTML = '<div class="platform-name">⚠️ Platform not detected</div>' +
-                           '<div>Make sure you\'re on a chat page</div>';
+        '<div>Make sure you\'re on ChatGPT</div>';
     }
   });
 
@@ -36,15 +36,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   extractBtn.addEventListener('click', async () => {
     extractBtn.disabled = true;
     extractBtn.textContent = 'Extracting...';
-    
+
     const options = {
       includeTimestamps: includeTimestampsCheckbox.checked,
       compactMode: compactModeCheckbox.checked
     };
 
-    chrome.tabs.sendMessage(tab.id, { 
+    chrome.tabs.sendMessage(tab.id, {
       action: 'extractConversation',
-      options: options 
+      options: options
     }, (response) => {
       if (chrome.runtime.lastError) {
         alert('Error: ' + chrome.runtime.lastError.message);
@@ -52,16 +52,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         extractBtn.textContent = 'Extract Conversation';
         return;
       }
-      
+
       if (response && response.success) {
         // Show stats
         statsDiv.classList.add('visible');
         messageCountSpan.textContent = response.messageCount;
         fileSizeSpan.textContent = response.fileSize;
-        
+
         // Download the file
         downloadJSON(response.data, response.filename);
-        
+
         // Reset button
         setTimeout(() => {
           extractBtn.disabled = false;
@@ -80,7 +80,7 @@ function downloadJSON(data, filename) {
   const jsonStr = JSON.stringify(data, null, 2);
   const blob = new Blob([jsonStr], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
-  
+
   chrome.downloads.download({
     url: url,
     filename: filename,
