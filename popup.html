@@ -1,13 +1,45 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Chat Extractor</title>
-</head>
-<body>
-  <button id="extract">Extract Chat</button>
-  <button id="download">Download JSON</button>
-  <pre id="output"></pre>
+  <head>
+    <meta charset="UTF-8" />
+    <title>AI Chat Extractor</title>
+    <link href="styles.css" rel="stylesheet" />
+  </head>
+  <body>
+    <h1>🤖 AI Chat Extractor</h1>
 
-  <script src="popup.js"></script>
-</body>
+    <div id="status" class="status">
+      <div class="platform-name">Detecting platform...</div>
+    </div>
+
+    <div class="options">
+      <div class="option-item">
+        <label>
+          <input type="checkbox" id="includeTimestamps" checked />
+          Include timestamps (if available)
+        </label>
+      </div>
+      <div class="option-item">
+        <label>
+          <input type="checkbox" id="compactMode" checked />
+          Compact mode (smaller file size)
+        </label>
+      </div>
+    </div>
+
+    <button id="extractBtn" disabled>Extract Conversation</button>
+
+    <div id="stats" class="stats">
+      <div class="stat-item">
+        <strong>Messages extracted:</strong> <span id="messageCount">0</span>
+      </div>
+      <div class="stat-item">
+        <strong>File size:</strong> <span id="fileSize">0 KB</span>
+      </div>
+    </div>
+
+    <div class="footer">Extract AI conversations to JSON format</div>
+
+    <script src="popup.js"></script>
+  </body>
 </html>
