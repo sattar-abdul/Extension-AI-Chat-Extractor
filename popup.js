@@ -1,4 +1,5 @@
 // Popup script - handles UI interactions
+
 document.addEventListener('DOMContentLoaded', async () => {
   const extractBtn = document.getElementById('extractBtn');
   const statusDiv = document.getElementById('status');
@@ -15,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   chrome.tabs.sendMessage(tab.id, { action: 'detectPlatform' }, (response) => {
     if (chrome.runtime.lastError) {
       statusDiv.className = 'status not-detected';
-      statusDiv.innerHTML = '<div class="platform-name">⚠️ Not on ChatGPT</div>' +
+      statusDiv.innerHTML = '<div class="platform-name">Not on ChatGPT</div>' +
         '<div>Please navigate to ChatGPT</div>';
       return;
     }
@@ -27,8 +28,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       extractBtn.disabled = false;
     } else {
       statusDiv.className = 'status not-detected';
-      statusDiv.innerHTML = '<div class="platform-name">⚠️ Platform not detected</div>' +
-        '<div>Make sure you\'re on ChatGPT</div>';
+      statusDiv.innerHTML = '<div class="platform-name">Platform not detected</div>' +
+        '<div>Make sure you\'re on a ChatGPT conversation</div>';
     }
   });
 
@@ -76,6 +77,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 });
 
+/**
+ * Download JSON data as a file
+ */
 function downloadJSON(data, filename) {
   const jsonStr = JSON.stringify(data, null, 2);
   const blob = new Blob([jsonStr], { type: 'application/json' });

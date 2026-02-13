@@ -1,45 +1,52 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>AI Chat Extractor</title>
-    <link href="styles.css" rel="stylesheet" />
-  </head>
-  <body>
-    <h1>🤖 AI Chat Extractor</h1>
 
-    <div id="status" class="status">
-      <div class="platform-name">Detecting platform...</div>
+<head>
+  <meta charset="UTF-8">
+  <title>AI Chat Extractor</title>
+  <link href="styles.css" rel="stylesheet" />
+</head>
+
+<body>
+  <h1>AI Chat Extractor</h1>
+
+  <div id="status" class="status">
+    <div class="platform-name">Detecting platform...</div>
+  </div>
+
+  <div class="options">
+    <div class="option-item">
+      <label>
+        <input type="checkbox" id="includeTimestamps">
+        Include timestamps
+      </label>
     </div>
-
-    <div class="options">
-      <div class="option-item">
-        <label>
-          <input type="checkbox" id="includeTimestamps" checked />
-          Include timestamps (if available)
-        </label>
-      </div>
-      <div class="option-item">
-        <label>
-          <input type="checkbox" id="compactMode" checked />
-          Compact mode (smaller file size)
-        </label>
-      </div>
+    <div class="option-item">
+      <label>
+        <input type="checkbox" id="compactMode" checked>
+        Compact mode (smaller file)
+      </label>
     </div>
+  </div>
 
-    <button id="extractBtn" disabled>Extract Conversation</button>
+  <button id="extractBtn" disabled>Extract Conversation</button>
 
-    <div id="stats" class="stats">
-      <div class="stat-item">
-        <strong>Messages extracted:</strong> <span id="messageCount">0</span>
-      </div>
-      <div class="stat-item">
-        <strong>File size:</strong> <span id="fileSize">0 KB</span>
-      </div>
-    </div>
+  <div id="stats" class="stats">
+    <div class="stat-item"><strong>Messages:</strong> <span id="messageCount">0</span></div>
+    <div class="stat-item"><strong>File size:</strong> <span id="fileSize">0 KB</span></div>
+  </div>
 
-    <div class="footer">Extract AI conversations to JSON format</div>
+  <div class="info-box">
+    ✓ Preserves markdown formatting<br>
+    ✓ Tables, code blocks, lists<br>
+    ✓ Removes emojis automatically
+  </div>
 
-    <script src="popup.js"></script>
-  </body>
+  <div class="footer">
+    Extract ChatGPT conversations to JSON
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+
 </html>

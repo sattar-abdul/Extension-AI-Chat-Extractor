@@ -1,6 +1,139 @@
 // Content script - runs on AI chat pages and extracts conversations
 
-// Platform-specific selectors and extraction logic
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+/**
+ * Convert HTML table to Markdown format
+ */
+function tableToMarkdown(table) {
+  let markdown = '\n\n';
+  const rows = table.querySelectorAll('tr');
+  
+  rows.forEach((row, rowIndex) => {
+    const cells = row.querySelectorAll('td, th');
+    const cellTexts = Array.from(cells).map(cell => cell.textContent.trim());
+    markdown += '| ' + cellTexts.join(' | ') + ' |\n';
+    
+    // Add separator after header row
+    if (rowIndex === 0) {
+      markdown += '|' + cellTexts.map(() => ' --- ').join('|') + '|\n';
+    }
+  });
+  
+  return markdown + '\n';
+}
+
+/**
+ * Detect programming language from code block
+ */
+function detectLanguage(codeBlock) {
+  // ChatGPT adds language classes like "language-python"
+  const pre = codeBlock.closest('pre');
+  const codeClasses = codeBlock.className || '';
+  const preClasses = pre?.className || '';
+  
+  // Try code element classes first
+  let match = codeClasses.match(/language-(\w+)/);
+  if (match) return match[1];
+  
+  // Try pre element classes
+  match = preClasses.match(/language-(\w+)/);
+  if (match) return match[1];
+  
+  // Check for common language indicators in parent divs
+  const parent = codeBlock.closest('[class*="language"]');
+  if (parent) {
+    match = parent.className.match(/language-(\w+)/);
+    if (match) return match[1];
+  }
+  
+  return ''; // No language detected
+}
+
+/**
+ * Remove all emojis from text
+ */
+function removeEmojis(text) {
+  return text
+    .replace(/[\u{1F600}-\u{1F64F}]/gu, '') // Emoticons
+    .replace(/[\u{1F300}-\u{1F5FF}]/gu, '') // Symbols & Pictographs
+    .replace(/[\u{1F680}-\u{1F6FF}]/gu, '') // Transport & Map
+    .replace(/[\u{1F700}-\u{1F77F}]/gu, '') // Alchemical
+    .replace(/[\u{1F780}-\u{1F7FF}]/gu, '') // Geometric Shapes
+    .replace(/[\u{1F800}-\u{1F8FF}]/gu, '') // Supplemental Arrows
+    .replace(/[\u{1F900}-\u{1F9FF}]/gu, '') // Supplemental Symbols
+    .replace(/[\u{1FA00}-\u{1FA6F}]/gu, '') // Chess Symbols
+    .replace(/[\u{1FA70}-\u{1FAFF}]/gu, '') // Symbols and Pictographs Extended-A
+    .replace(/[\u{2600}-\u{26FF}]/gu, '')   // Misc symbols
+    .replace(/[\u{2700}-\u{27BF}]/gu, '')   // Dingbats
+    .replace(/[\u{FE00}-\u{FE0F}]/gu, '')   // Variation Selectors
+    .replace(/[\u{1F1E6}-\u{1F1FF}]/gu, '') // Flags
+    .replace(/[\u{E0020}-\u{E007F}]/gu, '') // Tags
+    .replace(/[\u{200D}]/gu, '')            // Zero-width joiner
+    .trim();
+}
+
+/**
+ * Clean up whitespace and formatting
+ */
+function cleanText(text) {
+  return text
+    .replace(/Copy code\n?/g, '')           // Remove "Copy code" text
+    .replace(/\n{3,}/g, '\n\n')             // Max 2 consecutive newlines
+    .replace(/\t/g, '    ')                 // Convert tabs to 4 spaces
+    .replace(/ {3,}/g, '  ')                // Max 2 consecutive spaces (except code indentation)
+    .trim();
+}
+
+/**
+ * Extract content from element while preserving markdown structure
+ */
+function extractMarkdownContent(element) {
+  // Clone to avoid modifying the original DOM
+  const clone = element.cloneNode(true);
+  
+  // Remove all UI elements (buttons, SVGs, icons)
+  clone.querySelectorAll('button, svg, [role="button"], [class*="copy"], [class*="icon"]').forEach(el => {
+    el.remove();
+  });
+  
+  // Convert HTML tables to Markdown tables
+  clone.querySelectorAll('table').forEach(table => {
+    const markdownTable = tableToMarkdown(table);
+    const textNode = document.createTextNode(markdownTable);
+    table.replaceWith(textNode);
+  });
+  
+  // Preserve code blocks with proper markdown syntax
+  clone.querySelectorAll('pre').forEach(pre => {
+    const codeBlock = pre.querySelector('code');
+    if (codeBlock) {
+      const language = detectLanguage(codeBlock);
+      const code = codeBlock.textContent;
+      const markdown = `\n\`\`\`${language}\n${code}\n\`\`\`\n`;
+      const textNode = document.createTextNode(markdown);
+      pre.replaceWith(textNode);
+    }
+  });
+  
+  // Get text content (preserves markdown syntax for bold, italic, links, etc.)
+  let text = clone.textContent;
+  
+  // Remove emojis
+  text = removeEmojis(text);
+  
+  // Clean up whitespace and formatting
+  text = cleanText(text);
+  
+  return text;
+}
+
+// ============================================================================
+// PLATFORM CONFIGURATION
+// ============================================================================
+
 const PLATFORMS = {
   chatgpt: {
     name: 'ChatGPT',
@@ -11,7 +144,7 @@ const PLATFORMS = {
       userMessage: '[data-message-author-role="user"]',
       assistantMessage: '[data-message-author-role="assistant"]',
       messageText: '.markdown',
-      timestamp: 'time' // May not always be present
+      timestamp: 'time'
     },
     extract: function () {
       const messages = [];
@@ -23,21 +156,16 @@ const PLATFORMS = {
 
         if (!isUser && !isAssistant) return;
 
-        // Extract text content
+        // Extract text content with markdown preservation
         const contentDiv = article.querySelector('.markdown, .whitespace-pre-wrap, [class*="prose"]');
         let text = '';
 
         if (contentDiv) {
-          // Clone the node to manipulate it
-          const clone = contentDiv.cloneNode(true);
-
-          // Remove code copy buttons and other UI elements
-          clone.querySelectorAll('button, .copy-button').forEach(btn => btn.remove());
-
-          text = clone.innerText.trim();
+          text = extractMarkdownContent(contentDiv);
         }
 
-        if (!text) return;
+        // Skip empty messages
+        if (!text || text.length < 1) return;
 
         messages.push({
           role: isUser ? 'user' : 'assistant',
@@ -51,7 +179,13 @@ const PLATFORMS = {
   }
 };
 
-// Detect which platform we're on
+// ============================================================================
+// MAIN EXTRACTION FUNCTIONS
+// ============================================================================
+
+/**
+ * Detect which platform we're on
+ */
 function detectPlatform() {
   for (const [key, platform] of Object.entries(PLATFORMS)) {
     if (platform.detect()) {
@@ -61,7 +195,9 @@ function detectPlatform() {
   return null;
 }
 
-// Extract conversation from current platform
+/**
+ * Extract conversation from current platform
+ */
 function extractConversation(options = {}) {
   const platformInfo = detectPlatform();
   if (!platformInfo) {
@@ -119,7 +255,10 @@ function extractConversation(options = {}) {
   };
 }
 
-// Listen for messages from popup
+// ============================================================================
+// MESSAGE LISTENER
+// ============================================================================
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'detectPlatform') {
     const result = detectPlatform();
