@@ -12,10 +12,10 @@ This extension helps you:
 
 ## 📋 Features
 
+- ✅ **Multi-Platform Support**: ChatGPT, Claude, Gemini (extensible to others)
 - ✅ **Compact Mode**: Minimized JSON for smallest file size
 - ✅ **Timestamp Support**: Optional timestamp inclusion
 - ✅ **Clean Extraction**: Removes UI elements, keeps only conversation
-- ✅ **Keeps Structure Intact**: Preserves markdown formatting, tables, code blocks, lists
 - ✅ **Easy to Use**: One-click extraction from popup
 
 ## 🚀 Installation
@@ -131,18 +131,22 @@ ai-chat-extractor/
 ├── popup.html          # UI interface
 ├── popup.js           # UI logic
 ├── content.js         # Core extraction logic
-├── icon.png         # Extension icon
-├── styles.css         # UI styles
-├── ROADMAP.md         # Roadmap
+├── icon16.png         # Extension icon (16x16)
+├── icon48.png         # Extension icon (48x48)
+├── icon128.png        # Extension icon (128x128)
 └── README.md          # This file
 ```
 
 ## 🛠️ Technical Details
 
 ### Platform Detection
-The extension currently detects only Chat GPT From URL hostname matching.
+The extension detects platforms by:
+1. URL hostname matching
+2. DOM structure analysis
+3. Platform-specific element detection
 
 ### Extraction Logic
+Each platform has custom selectors:
 
 **ChatGPT**:
 - Messages: `<article>` tags
@@ -150,6 +154,14 @@ The extension currently detects only Chat GPT From URL hostname matching.
 - Assistant: `[data-message-author-role="assistant"]`
 - Content: `.markdown` class
 
+**Claude**:
+- Messages: `[class*="font-claude-message"]`
+- User: `[data-is-user-message="true"]`
+- Assistant: `[data-is-user-message="false"]`
+
+**Gemini**:
+- Messages: `message-content` elements
+- User/Assistant: `data-author` attribute
 
 ## 🔄 Adding New Platforms
 
@@ -231,9 +243,9 @@ metadata: {
 - Disable "Include timestamps"
 - Consider extracting specific parts of long conversations
 
-## 📝 Project Phase
+## 📝 Next Steps (Your Goals)
 
-### Phase 1: Basic extraction (We are here)
+This is **Phase 1** - Basic extraction. For your ultimate goal:
 
 ### Phase 2: Context Compression
 - Add summarization capabilities
@@ -256,5 +268,15 @@ metadata: {
 
 MIT License - Feel free to modify and distribute
 
-**Version**: 1.0 
+## 🤝 Contributing
+
+This is a starting phase project. Contributions welcome for:
+- Additional platform support
+- Better extraction algorithms
+- Context compression features
+- UI improvements
+
+---
+
+**Version**: 1.0  
 **Last Updated**: February 2026

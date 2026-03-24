@@ -1,52 +1,122 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>AI Chat Extractor</title>
+    <link href="styles.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div class="header-icon">💬</div>
+        <h1>AI Chat Extractor</h1>
+      </div>
 
-<head>
-  <meta charset="UTF-8">
-  <title>AI Chat Extractor</title>
-  <link href="styles.css" rel="stylesheet" />
-</head>
+      <div id="status" class="status">
+        <div class="platform-name">Detecting platform...</div>
+      </div>
 
-<body>
-  <h1>AI Chat Extractor</h1>
+      <!-- API Key Setup -->
+      <div id="apiSetup" class="api-setup" style="display: none">
+        <div class="api-header">
+          <span class="api-icon">🔑</span>
+          <span>One-time API Setup</span>
+        </div>
+        <p class="api-message">
+          Enter your Gemini API key for AI summarization
+        </p>
+        <div class="api-input-group">
+          <input
+            type="password"
+            id="apiKeyInput"
+            placeholder="Paste API key here"
+          />
+          <button id="saveApiKeyBtn" class="btn-small">Save</button>
+        </div>
+        <div id="apiSetupStatus" class="api-status"></div>
+        <div class="api-help">
+          <a href="https://aistudio.google.com/app/apikey" target="_blank"
+            >Get free API key →</a
+          >
+        </div>
+      </div>
 
-  <div id="status" class="status">
-    <div class="platform-name">Detecting platform...</div>
-  </div>
+      <!-- API Key Saved -->
+      <div id="apiSaved" class="api-saved" style="display: none">
+        <span class="api-saved-icon">✓</span>
+        <span class="api-saved-text">API key configured</span>
+        <button id="changeApiKeyBtn" class="btn-link">Change</button>
+      </div>
 
-  <div class="options">
-    <div class="option-item">
-      <label>
-        <input type="checkbox" id="includeTimestamps">
-        Include timestamps
-      </label>
+      <!-- Options -->
+      <div class="options-section">
+        <div class="option-item">
+          <label class="checkbox-label">
+            <input type="checkbox" id="includeTimestamps" />
+            <span class="checkbox-text">Include timestamps</span>
+          </label>
+        </div>
+        <div class="option-item">
+          <label class="checkbox-label">
+            <input type="checkbox" id="compactMode" checked />
+            <span class="checkbox-text">Compact mode (smaller file)</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="actions">
+        <button id="extractBtn" disabled class="btn btn-primary">
+          <span class="btn-icon">📥</span>
+          <span class="btn-label">Extract Chat</span>
+        </button>
+
+        <button id="summarizeBtn" disabled class="btn btn-secondary">
+          <span class="btn-icon">🤖</span>
+          <span class="btn-label">Generate Summary</span>
+        </button>
+
+        <button id="generatePromptBtn" disabled class="btn btn-secondary">
+          <span class="btn-icon">💬</span>
+          <span class="btn-label">Create Prompt</span>
+        </button>
+      </div>
+
+      <!-- Stats -->
+      <div id="stats" class="stats">
+        <div class="stats-row">
+          <span class="stats-label">Messages:</span>
+          <span class="stats-value" id="messageCount">0</span>
+        </div>
+        <div class="stats-row">
+          <span class="stats-label">Original size:</span>
+          <span class="stats-value" id="fileSize">0 KB</span>
+        </div>
+        <div id="summaryStats" style="display: none">
+          <div class="stats-row">
+            <span class="stats-label">Summary size:</span>
+            <span class="stats-value" id="summarySize">0 KB</span>
+          </div>
+          <div class="stats-row">
+            <span class="stats-label">Compression:</span>
+            <span class="stats-value stats-highlight" id="compressionRatio"
+              >0%</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Info -->
+      <div class="info">
+        <div class="info-item">✓ Preserves markdown formatting</div>
+        <div class="info-item">✓ Tables, code blocks, lists</div>
+        <div class="info-item">✓ Removes emojis automatically</div>
+      </div>
+
+      <div class="footer">Made for ChatGPT conversation portability</div>
     </div>
-    <div class="option-item">
-      <label>
-        <input type="checkbox" id="compactMode" checked>
-        Compact mode (smaller file)
-      </label>
-    </div>
-  </div>
 
-  <button id="extractBtn" disabled>Extract Conversation</button>
-
-  <div id="stats" class="stats">
-    <div class="stat-item"><strong>Messages:</strong> <span id="messageCount">0</span></div>
-    <div class="stat-item"><strong>File size:</strong> <span id="fileSize">0 KB</span></div>
-  </div>
-
-  <div class="info-box">
-    ✓ Preserves markdown formatting<br>
-    ✓ Tables, code blocks, lists<br>
-    ✓ Removes emojis automatically
-  </div>
-
-  <div class="footer">
-    Extract ChatGPT conversations to JSON
-  </div>
-
-  <script src="popup.js"></script>
-</body>
-
+    <script src="summarizer.js"></script>
+    <script src="popup.js"></script>
+  </body>
 </html>
