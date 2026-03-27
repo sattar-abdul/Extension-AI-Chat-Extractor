@@ -4,12 +4,13 @@
     <meta charset="UTF-8" />
     <title>AI Chat Extractor</title>
     <link href="styles.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   </head>
   <body>
     <div class="container">
       <div class="header">
-        <div class="header-icon">💬</div>
-        <h1>AI Chat Extractor</h1>
+        <h1>Context Vault</h1>
+        <h3>(AI Chat Extractor)</h3>
       </div>
 
       <div id="status" class="status">
@@ -67,17 +68,17 @@
       <!-- Action Buttons -->
       <div class="actions">
         <button id="extractBtn" disabled class="btn btn-primary">
-          <span class="btn-icon">📥</span>
+          <span class="btn-icon"><i class="fa-solid fa-comment"></i></span>
           <span class="btn-label">Extract Chat</span>
         </button>
 
         <button id="summarizeBtn" disabled class="btn btn-secondary">
-          <span class="btn-icon">🤖</span>
-          <span class="btn-label">Generate Summary</span>
+          <span class="btn-icon"><i class="fa-solid fa-table-list"></i></span>
+          <span class="btn-label">Generate Context</span>
         </button>
 
         <button id="generatePromptBtn" disabled class="btn btn-secondary">
-          <span class="btn-icon">💬</span>
+          <span class="btn-icon"><i class="fa-solid fa-pen"></i></span>
           <span class="btn-label">Create Prompt</span>
         </button>
       </div>
