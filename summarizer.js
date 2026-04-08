@@ -11,26 +11,38 @@ function getSummarizationPrompt(conversationData) {
     })
     .join('\n\n');
   
-  return `You are a conversation analyzer. Analyze this ChatGPT conversation and create a concise summary.
+  return `You are an analysis expert AI system designed to convert conversations into structured knowledge. Extract context from the given conversation.
 
 CONVERSATION:
 ${conversationText}
 
+Given a conversation segment, extract the following:
+
+- metadata (domain, task type, participants)
+- user_intent (what does the user want)
+- key_claims (important factual or conceptual statements)
+- constraints (limitations, requirements, also includes rejected decisions and their reasons)
+- open_questions (questions and topics that still need discussion)
+- definitions (extract conversation-specific definitions, fact-like statements that were agreed upon or asserted without dispute)
+- conclusions (final decisions and results of the conversations)
+- next_steps (steps yet to be executed)
+- condensed_conversations(very short 1-2 sentence summary of what did the message include)
+
 Return ONLY valid JSON (no markdown, no explanation):
 
 {
-  "goal": "What user wants to achieve",
-  "stage": "Current progress",
-  "progress_percent": 75,
-  "completed": ["Done items"],
-  "key_decisions": [{"question": "...", "choice": "...", "reason": "..."}],
-  "technical_details": ["Important details"],
-  "current_blockers": [],
+  "metadata": {},
+  "user_intent": {},
+  "key_claims": [],
+  "conclusions": [],
+  "constraints": [],
+  "open_questions": [],
+  "definitions": {}
   "next_steps": ["Step 1", "Step 2"],
   "condensed_conversation": [{"turn": 1, "speaker": "user", "key_point": "..."}]
 }
 
-Keep it concise. Include only 5-10 most important exchanges.`;
+Keep it concise and ordered, but include all important information needed to further continue conversation`;
 }
 
 async function summarizeWithGemini(conversationData, apiKey) {
